@@ -1,0 +1,138 @@
+# Tile Maps
+# 2D Sprites are from this website and they were free: https://gif-superretroworld.itch.io/dungeon-pack
+# Hold "A" to attain box1 Image.
+# Hold "B" to attain bush1 Image.
+# Hold "C" to attain flower1 Image.
+# Hold "D" to attain grass Image.
+# Hold "E" to attain mushroom Image.
+# Hold "F" to attain rock1 Image.
+# Hold "G" to attain stairs Image.
+# Hold "H" to attain mountain Image.
+# Click on the mouse to drop the image on the canvas.
+# Press "S" to save the image. Image will be saved in the assignment folder.
+
+gridLines = 30
+gridImages = []
+
+GRID_OFFSET = PVector (0, 0)
+GRID_GAP = PVector (32, 32)
+
+# specific PVector variable for the images alignment on the bottom of the screen.
+imageAlignment = PVector (10, 460)
+
+# creates a list of 50 empty lists then populates each list of 50 nones.
+for o in range (50):
+    none_list = []
+    gridImages.append(none_list)
+    for a in range (50):
+        none_list.append(None)
+        
+# imports the image.
+def setup():
+    global box1, bush1, flower1, grass, mushroom, rock1, stairs, mountain, tiles, gridLines, tempPos, gridx, gridy
+    size (450, 500)
+    textSize(12)
+    
+    # loads image as variable type.
+    box1 = loadImage("box1.png")
+    bush1 = loadImage("bush1.png")
+    flower1 = loadImage("flower1.png")
+    grass = loadImage("grass.png")
+    mushroom = loadImage("mushroom.png")
+    rock1 = loadImage("rock1.png")
+    stairs = loadImage("stairs.png")
+    mountain = loadImage("mountain.png")
+
+def Pos(gridx, gridy):
+    tempPos = PVector(gridx * GRID_GAP.x + GRID_OFFSET.x, gridy * GRID_GAP.y + GRID_OFFSET.y)
+    return tempPos
+
+# takes x position and y position - x and y position floor divide it to return gridPos
+def gridPos(x,y):
+    gridPos = ((x - GRID_OFFSET.x) // GRID_GAP.x, (y - GRID_OFFSET.y) // GRID_GAP.y)
+    return gridPos
+    
+def draw(): 
+    background (0,155,0)                    
+    fill(255)
+    stroke(0)
+    
+    tempPos = PVector(imageAlignment.x, imageAlignment.y)
+    fill(50)
+    rect (tempPos.x - 10, tempPos.y - 10, width * 2, height / 5)
+
+    # Image alighnment buttom of the screen.
+    image(box1,tempPos.x, tempPos.y)
+    image(bush1,tempPos.x + 40, tempPos.y)
+    image(flower1, tempPos.x + 80, tempPos.y)
+    image(grass, tempPos.x + 120, tempPos.y)
+    image(mushroom, tempPos.x + 160, tempPos.y)
+    image(rock1,tempPos.x + 200, tempPos.y)
+    image(stairs,tempPos.x + 240, tempPos.y)
+    image(mountain,tempPos.x + 280, tempPos.y)
+    
+    # Makes grid.
+    for i in range(len(gridImages)):
+        for l in range(len(gridImages[i])):
+            tempPos = Pos(i, l)
+            img = gridImages[i][l]
+            if img != None:
+                image(img, tempPos.x, tempPos.y)
+                
+    # text input what key you pressed.
+    text ("Key inputted:"+ str(key), 5, 15)
+    
+# upon mouse click and holding down a key an image a image will populate.
+def keyPressed():
+    #tracks grid position to draw
+    gridx, gridy = gridPos(mouseX, mouseY)
+    print (gridx, gridy)
+    
+    #trying to remove image upon creation.
+    """if key == 'z' or key == 'Z':
+        if mousePressed:
+            remove(bush1 = loadImage("bush1.png"))"""
+    
+    if key == 'a' or key == 'A':
+        image(box1, mouseX, mouseY)
+        if mousePressed:
+            gridImages[int(gridx)][int(gridy)] = box1
+
+    if key == 'b' or key == 'B':
+        image(bush1, mouseX, mouseY)
+        if mousePressed:
+            gridImages[int(gridx)][int(gridy)] = bush1
+        
+    if key == 'c' or key == 'C':
+        image(flower1, mouseX, mouseY)
+        if mousePressed:
+            gridImages[int(gridx)][int(gridy)] = flower1
+            
+    if key == 'd' or key == 'D':
+        image(grass, mouseX, mouseY)
+        if mousePressed:
+            gridImages[int(gridx)][int(gridy)] = grass
+        
+    if key == 'e' or key == 'E':
+        image(mushroom, mouseX, mouseY)
+        if mousePressed:
+            gridImages[int(gridx)][int(gridy)] = mushroom
+        
+    if key == 'f' or key == 'F':
+        image(rock1, mouseX, mouseY)
+        if mousePressed:
+            gridImages[int(gridx)][int(gridy)] = rock1
+        
+    if key == 'g' or key == 'G':
+        image(stairs, mouseX, mouseY)
+        if mousePressed:
+            gridImages[int(gridx)][int(gridy)] = stairs
+    
+    if key == 'h' or key == 'H':
+        image(mountain, mouseX, mouseY)
+        if mousePressed:
+            gridImages[int(gridx)][int(gridy)] = mountain
+        
+    # Saves image on the project title as .png
+    if key == 's' or key == 'S':
+        save("SaveScreenshot.png")
