@@ -9,7 +9,7 @@
 # Hold "G" to attain stairs Image.
 # Hold "H" to attain mountain Image.
 # Click on the mouse to drop the image on the canvas.
-# Press "S" to save the image. Image will be saved in the assignment folder.
+# Press "S" to save the image. Image will be saved in the project folder.
 
 gridLines = 30
 gridImages = []
