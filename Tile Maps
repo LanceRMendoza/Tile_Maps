@@ -1,48 +1,74 @@
-# Tile Maps
 # 2D Sprites are from this website and they were free: https://gif-superretroworld.itch.io/dungeon-pack
-# Hold "A" to attain box1 Image.
-# Hold "B" to attain bush1 Image.
-# Hold "C" to attain flower1 Image.
-# Hold "D" to attain grass Image.
-# Hold "E" to attain mushroom Image.
-# Hold "F" to attain rock1 Image.
-# Hold "G" to attain stairs Image.
-# Hold "H" to attain mountain Image.
-# Click on the mouse to drop the image on the canvas.
-# Press "S" to save the image. Image will be saved in the project folder.
 
-gridLines = 30
-gridImages = []
+# Hold "a" to attain box1 image.
+# Hold "b" to attain bush1 image.
+# Hold "c" to attain flower1 image.
+# Hold "d" to attain grass image.
+# Hold "e" to attain mushroom image.
+# Hold "f" to attain rock1 image.
+# Hold "g" to attain rock2 image.
+# Hold "h" to attain stairs image.
+# Hold "i" to attain mountain image.
+# Hold "j" to attain cave image.
+# Hold "k" to attain floor1 image.
+# Hold "l" to attain floor2 image.
+# Hold "m" to attain kettle image.
+# Hold "n" to attain obelisk image.
+# Hold "o" to attain pot image.
+# Hold "p" to attain tombstone image.
+# Hold "q" to attain tree image.
+# Hold "r" to attain water image.
+
+# Click on the mouse to drop the image on the canvas.
+# Press "S" to save the image. image will be saved in the assignment folder.
+# Press Enter to switch from the Title Screen to the Game Play screen.
+# Press Tab to get rid of the Grid lines
+
+gameState = 0 
+TITLE_STATE = 0
+PLAY_STATE = 1
+
+gridimages = []
 
 GRID_OFFSET = PVector (0, 0)
 GRID_GAP = PVector (32, 32)
 
-# specific PVector variable for the images alignment on the bottom of the screen.
-imageAlignment = PVector (10, 460)
-
-# creates a list of 50 empty lists then populates each list of 50 nones.
-for o in range (50):
+for o in range (80):
     none_list = []
-    gridImages.append(none_list)
-    for a in range (50):
-        none_list.append(None)
-        
+    gridimages.append(none_list)
+    for a in range (80):
+        none_list.append([])
+    
 # imports the image.
 def setup():
-    global box1, bush1, flower1, grass, mushroom, rock1, stairs, mountain, tiles, gridLines, tempPos, gridx, gridy
-    size (450, 500)
+    global box1, bush1, flower1, grass, mushroom, rock1, stairs, mountain, tiles, tempPos, gridx, gridy, rocks2, cave, floor1, floor2, kettle, obelisk, pot, tombstone, tree, water, gameState, selectionTree, selectionKettle, selectionObelisk, selectionWater, selectionMountain
+    size (960, 720)
     textSize(12)
     
-    # loads image as variable type.
     box1 = loadImage("box1.png")
     bush1 = loadImage("bush1.png")
     flower1 = loadImage("flower1.png")
     grass = loadImage("grass.png")
     mushroom = loadImage("mushroom.png")
     rock1 = loadImage("rock1.png")
+    rocks2 = loadImage("rocks2.png")
     stairs = loadImage("stairs.png")
     mountain = loadImage("mountain.png")
-
+    selectionMountain = loadImage("mountain.png")
+    cave = loadImage("Cave.png")
+    floor1 = loadImage("Floor1.png")
+    floor2 = loadImage("Floor2.png")
+    kettle = loadImage("kettle.png")
+    selectionKettle = loadImage("kettle.png")
+    obelisk = loadImage("Obelisk.png")
+    selectionObelisk = loadImage("Obelisk.png")
+    pot = loadImage("Pot.png")
+    tombstone = loadImage("Tombstone.png")
+    selectionTree = loadImage("tree.png")
+    tree = loadImage("tree.png")
+    selectionWater = loadImage("water.png")
+    water = loadImage("water.png")
+    
 def Pos(gridx, gridy):
     tempPos = PVector(gridx * GRID_GAP.x + GRID_OFFSET.x, gridy * GRID_GAP.y + GRID_OFFSET.y)
     return tempPos
@@ -52,87 +78,178 @@ def gridPos(x,y):
     gridPos = ((x - GRID_OFFSET.x) // GRID_GAP.x, (y - GRID_OFFSET.y) // GRID_GAP.y)
     return gridPos
     
+#resize all images to 32,32
+def myresize():
+    selectionMountain.resize(32,32)
+    selectionTree.resize(32,32)
+    selectionWater.resize(32,32)
+    selectionKettle.resize(32,32)
+    selectionObelisk.resize(32,32)
+    
 def draw(): 
-    background (0,155,0)                    
+    background (0,150,0)                    
     fill(255)
     stroke(0)
+    myresize()
     
-    tempPos = PVector(imageAlignment.x, imageAlignment.y)
-    fill(50)
-    rect (tempPos.x - 10, tempPos.y - 10, width * 2, height / 5)
+    if gameState == TITLE_STATE:
+        drawTitleScreen()
+    elif gameState == PLAY_STATE:
+        drawPlayScreen()
+    
 
-    # Image alighnment buttom of the screen.
+def drawTitleScreen():
+    background (0)   
+    textSize(16)
+    textAlign(CENTER) # align text to the center.
+    fill(255,0,0)
+    text ("Welcome To Tile Adventure!", width/2, height/2 - 20)
+    fill(0,0,255)
+    text ("Tile Adventure is a game where you (the player) create your own tile world to play a 2d game in." + "\nShould we get started?", width/2, height/2)
+    fill(0,255,0)
+    text ("Press ENTER to start the Game. Press TAB to get rid of the Grid lines ", width/2, height/2 + 50)
+
+    fill(255)
+    textAlign(LEFT)
+    text ("Todays Date: " + str(month()) + "-" + str(day()) + "-" +str(year()), 0 , 15)
+
+    textAlign(RIGHT)
+    text(str(hour()) + ":" + nf(minute(), 2) + ":" + nf(second(), 2), width, 15)
+    
+    
+    
+def drawPlayScreen():
+    # Makes grid.
+    background (0,150,0)    
+    fill (155, 155, 155)
+    noFill()
+    stroke(100)
+    
+    gridLines.render()
+    
+    for d in range(len(gridimages)):
+        for l in range(len(gridimages[d])):
+            tempPos = Pos(d, l)
+            img_list = gridimages[d][l] # list of images
+            for img in img_list:
+                image(img, tempPos.x, tempPos.y)
+    
+    # Specific PVector variable for the images alignment on the bottom of the screen.
+    imageAlignment = PVector (width/ 2, height/2 + 270)
+    tempPos = PVector(imageAlignment.x, imageAlignment.y)
+    noStroke()
+    fill(155, 100)
+    rect (tempPos.x - 10, tempPos.y - 10, width * 2, height / 5)
+    
     image(box1,tempPos.x, tempPos.y)
     image(bush1,tempPos.x + 40, tempPos.y)
     image(flower1, tempPos.x + 80, tempPos.y)
     image(grass, tempPos.x + 120, tempPos.y)
     image(mushroom, tempPos.x + 160, tempPos.y)
     image(rock1,tempPos.x + 200, tempPos.y)
-    image(stairs,tempPos.x + 240, tempPos.y)
-    image(mountain,tempPos.x + 280, tempPos.y)
+    image(rocks2,tempPos.x + 240, tempPos.y)
+    image(stairs,tempPos.x + 280, tempPos.y)
+    image(selectionMountain,tempPos.x + 320, tempPos.y)
+    image(cave,tempPos.x + 360, tempPos.y)
+    image(floor1,tempPos.x + 400, tempPos.y)
+    image(floor2,tempPos.x + 440, tempPos.y)
+    image(selectionKettle,tempPos.x, tempPos.y + 50)
+    image(selectionObelisk,tempPos.x + 40, tempPos.y + 50)
+    image(pot,tempPos.x + 80, tempPos.y + 50)
+    image(tombstone,tempPos.x + 120, tempPos.y + 50)
+    image(selectionTree,tempPos.x + 160, tempPos.y + 50)
+    image(selectionWater,tempPos.x + 200, tempPos.y + 50)
     
-    # Makes grid.
-    for i in range(len(gridImages)):
-        for l in range(len(gridImages[i])):
-            tempPos = Pos(i, l)
-            img = gridImages[i][l]
-            if img != None:
-                image(img, tempPos.x, tempPos.y)
+    textSize (12)
+    fill(255)
+    text("A" ,tempPos.x, tempPos.y)
+    text("B" ,tempPos.x + 40, tempPos.y)
+    text("C" ,tempPos.x + 80, tempPos.y)
+    text("D" ,tempPos.x + 120, tempPos.y)
+    text("E" ,tempPos.x + 160, tempPos.y)
+    text("F",tempPos.x + 200, tempPos.y)
+    text("G",tempPos.x + 240, tempPos.y)
+    text("H",tempPos.x + 280, tempPos.y)
+    text("I",tempPos.x + 320, tempPos.y)
+    text("J",tempPos.x + 360, tempPos.y)
+    text("K",tempPos.x + 400, tempPos.y)
+    text("L",tempPos.x + 440, tempPos.y)
+    text("M",tempPos.x, tempPos.y + 50)
+    text("N" ,tempPos.x + 40, tempPos.y + 50)
+    text("O" ,tempPos.x + 80, tempPos.y + 50)
+    text("P" ,tempPos.x + 120, tempPos.y + 50)
+    text("Q" ,tempPos.x + 160, tempPos.y + 50)
+    text("R",tempPos.x + 200, tempPos.y + 50)
+    
+class GridLines():
+    
+    def __init__(self, space = 32, enabled = True):
+        self.space = space
+        self.enabled = enabled
+        
+    def render(self):
+        if self.enabled:
+            gridLinesX = self.space
+            gridLinesY = self.space
+            while (gridLinesX < width):
+                line (gridLinesX, 0, gridLinesX, height)
+                gridLinesX = gridLinesX + self.space
+            
+            while (gridLinesY < height):
+                line (0, gridLinesY, width, gridLinesY)
+                gridLinesY = gridLinesY + self.space
                 
-    # text input what key you pressed.
-    text ("Key inputted:"+ str(key), 5, 15)
-    
-# upon mouse click and holding down a key an image a image will populate.
-def keyPressed():
+    def toggleEnabled(self):
+        self.enabled = not self.enabled
+
+
+# Holding down a key, an image a image will populate.
+# Mouse Press to put image on the screen.
+# Loaded the image again, to solve the problem of the resizing by (32, 32) on the UI and canvas drawing.
+gridLines = GridLines()
+
+def myGridImages(character, img):
     #tracks grid position to draw
     gridx, gridy = gridPos(mouseX, mouseY)
     print (gridx, gridy)
     
-    #trying to remove image upon creation.
-    """if key == 'z' or key == 'Z':
+    if key == character or key == character.upper():
+        image(img, mouseX, mouseY)
         if mousePressed:
-            remove(bush1 = loadImage("bush1.png"))"""
+            gridimages[int(gridx)][int(gridy)].append(img)
     
-    if key == 'a' or key == 'A':
-        image(box1, mouseX, mouseY)
-        if mousePressed:
-            gridImages[int(gridx)][int(gridy)] = box1
-
-    if key == 'b' or key == 'B':
-        image(bush1, mouseX, mouseY)
-        if mousePressed:
-            gridImages[int(gridx)][int(gridy)] = bush1
-        
-    if key == 'c' or key == 'C':
-        image(flower1, mouseX, mouseY)
-        if mousePressed:
-            gridImages[int(gridx)][int(gridy)] = flower1
-            
-    if key == 'd' or key == 'D':
-        image(grass, mouseX, mouseY)
-        if mousePressed:
-            gridImages[int(gridx)][int(gridy)] = grass
-        
-    if key == 'e' or key == 'E':
-        image(mushroom, mouseX, mouseY)
-        if mousePressed:
-            gridImages[int(gridx)][int(gridy)] = mushroom
-        
-    if key == 'f' or key == 'F':
-        image(rock1, mouseX, mouseY)
-        if mousePressed:
-            gridImages[int(gridx)][int(gridy)] = rock1
-        
-    if key == 'g' or key == 'G':
-        image(stairs, mouseX, mouseY)
-        if mousePressed:
-            gridImages[int(gridx)][int(gridy)] = stairs
-    
-    if key == 'h' or key == 'H':
-        image(mountain, mouseX, mouseY)
-        if mousePressed:
-            gridImages[int(gridx)][int(gridy)] = mountain
-        
+def keyPressed():
     # Saves image on the project title as .png
     if key == 's' or key == 'S':
-        save("SaveScreenshot.png")
+        save(".png")
+    
+    global gameState
+       
+    if key == ENTER:
+        if gameState == TITLE_STATE:
+            gameState = PLAY_STATE
+        
+    if gameState == PLAY_STATE:
+        
+        if key == TAB:
+            gridLines.toggleEnabled()
+        
+        myGridImages('a', box1)
+        myGridImages('b', bush1)
+        myGridImages('c', flower1)
+        myGridImages('d', grass)
+        myGridImages('e', mushroom)
+        myGridImages('f', rock1)
+        myGridImages('g', rocks2)
+        myGridImages('h', stairs)
+        myGridImages('i', mountain)
+        myGridImages('j', cave)
+        myGridImages('k', floor1)
+        myGridImages('l', floor2)
+        myGridImages('m', selectionKettle)
+        myGridImages('n', selectionObelisk)
+        myGridImages('o', pot)
+        myGridImages('p', tombstone)
+        myGridImages('q', tree)
+        myGridImages('r', water)
+    
